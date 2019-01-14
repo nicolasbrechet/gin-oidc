@@ -1,29 +1,29 @@
 package gin_oidc
 
 import (
-	"github.com/gin-gonic/gin"
-	"log"
-	"time"
-	"math/rand"
-	"github.com/gin-contrib/sessions"
 	"context"
-	"github.com/coreos/go-oidc"
-	"golang.org/x/oauth2"
+	"encoding/json"
 	"errors"
+	"github.com/coreos/go-oidc"
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/gin"
+	"golang.org/x/oauth2"
+	"log"
+	"math/rand"
 	"net/http"
 	"net/url"
-	"encoding/json"
+	"time"
 )
 
 type InitParams struct {
-	Router        *gin.Engine     //gin router (used to set handler for OIDC)
-	ClientId      string          //id from the authorization service (OIDC provider)
-	ClientSecret  string          //secret from the authorization service (OIDC provider)
-	Issuer        url.URL         //the URL identifier for the authorization service. for example: "https://accounts.google.com" - try adding "/.well-known/openid-configuration" to the path to make sure it's correct
-	ClientUrl     url.URL         //your website's/service's URL for example: "http://localhost:8081/" or "https://mydomain.com/
-	Scopes        []string        //OAuth scopes. If you're unsure go with: []string{oidc.ScopeOpenID, "profile", "email"}
-	ErrorHandler  gin.HandlerFunc //errors handler. for example: func(c *gin.Context) {c.String(http.StatusBadRequest, "ERROR...")}
-	PostLogoutUrl url.URL         //user will be redirected to this URL after he logs out (i.e. accesses the '/logout' endpoint added in 'Init()')
+	Router        *gin.Engine     // Router has the gin engine3
+	ClientId      string          // ClientId contains the client ID
+	ClientSecret  string          // ClientSecret contains the client secret
+	Issuer        url.URL         // Issuer contains the Issuer URL that signs the JWT token
+	ClientUrl     url.URL         // ClientURL describes the base url for the application
+	Scopes        []string        // Scopes describe the defined OAuth scopes that get requested
+	ErrorHandler  gin.HandlerFunc // ErrorHandler describes the function that handles the errors
+	PostLogoutUrl url.URL         // PostLogoutUrl describes the URL that the user is redirected to after he logs out
 }
 
 func Init(i InitParams) gin.HandlerFunc {
@@ -137,7 +137,7 @@ func protectMiddleware(config *oauth2.Config) func(c *gin.Context) {
 		serverSession := sessions.Default(c)
 		authorized := serverSession.Get("oidcAuthorized")
 		if (authorized != nil && authorized.(bool)) ||
-			c.Request.URL.Path ==  "oidc-callback" {
+			c.Request.URL.Path == "oidc-callback" {
 			c.Next()
 			return
 		}
