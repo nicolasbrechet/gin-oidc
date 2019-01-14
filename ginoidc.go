@@ -26,6 +26,7 @@ type InitParams struct {
 	PostLogoutUrl url.URL         // PostLogoutUrl describes the URL that the user is redirected to after he logs out
 }
 
+// Init function initializes the oidc middleware
 func Init(i InitParams) gin.HandlerFunc {
 	verifier, config := initVerifierAndConfig(i)
 
