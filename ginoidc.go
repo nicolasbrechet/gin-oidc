@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/coreos/go-oidc"
-	"github.com/gin-contrib/sessions"
+	"github.com/gin-gonic/contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/oauth2"
 )
